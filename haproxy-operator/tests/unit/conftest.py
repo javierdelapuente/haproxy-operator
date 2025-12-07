@@ -372,7 +372,7 @@ def build_spoe_auth_relation(hostname=TEST_EXTERNAL_HOSTNAME_CONFIG):
     return scenario.Relation(
         endpoint="spoe-auth",
         interface="spoe-auth",
-        remote_app_name="haproxy-spoe-auth1",
+        remote_app_name="haproxy-spoe-auth",
         remote_app_data=SpoeAuthProviderAppData(
             cookie_name="authsession",
             event="on-frontend-http-request",

@@ -56,9 +56,6 @@ class SpoeAuthInformation(SpoeAuthProviderAppData):
             except (DataValidationError, SpoeAuthInvalidRelationDataError) as ex:
                 raise SpoeAuthValidationError from ex
 
-            if not app_data:
-                continue
-
             try:
                 requirer_units_data = spoe_auth_requirer.get_provider_unit_data(relation)
             except DataValidationError as ex:
