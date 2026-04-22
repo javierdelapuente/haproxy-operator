@@ -1,7 +1,8 @@
 name: Integration tests
 
 on:
-  pull_request:
+  workflow_dispatch:
+  pull_request:  
   schedule:
   - cron: "0 15 * * SAT"
 
@@ -41,7 +42,7 @@ jobs:
     with:
       provider: lxd
       juju-channel: 3/stable
-      self-hosted-runner: true
+      self-hosted-runner: false
       charmcraft-channel: latest/edge
       working-directory: ${{ matrix.charm.working-directory }}
       modules: ${{ matrix.charm.modules }}
@@ -54,7 +55,7 @@ jobs:
       use-canonical-k8s: true
       provider: 'k8s'
       channel: '1.32-classic/stable'
-      self-hosted-runner: true
+      self-hosted-runner: false
       juju-channel: 3/stable
       modules: |
         [
