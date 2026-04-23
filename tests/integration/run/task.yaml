@@ -1,0 +1,4 @@
+summary: integration tests
+
+execute: |
+    $( opcli pytest run -- -k $MODULE )
