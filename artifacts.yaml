@@ -1,4 +1,4 @@
-version: 2
+version: 1
 rocks: []
 charms:
 - name: haproxy-ddos-protection-configurator
