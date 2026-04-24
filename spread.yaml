@@ -4,17 +4,22 @@ kill-timeout: 60m
 backends:
   integration-test:
     systems:
-    - ubuntu-24.04
+    - ubuntu-24.04:
+        cpu: 8
+        memory: 8
+        disk: 40
   tutorial-test:
     systems:
-    - ubuntu-24.04
+    - ubuntu-24.04:
+        cpu: 4
+        memory: 8
+        disk: 20
 environment:
   SUDO_USER: ''
   SUDO_UID: ''
   LANG: C.UTF-8
   LANGUAGE: en
   CONCIERGE: '$(HOST: echo "${CONCIERGE:-concierge.yaml}")'
-  CPU: 8
 exclude:
 - .git
 - .tox
