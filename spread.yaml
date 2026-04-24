@@ -39,6 +39,9 @@ suites:
       MODULE/test_haproxy_ddos: test_haproxy_ddos
       MODULE/test_haproxy_route_policy: test_haproxy_route_policy
       MODULE/test_oauth_spoe: test_oauth_spoe
+      CONCIERGE/test_haproxy_ddos: concierge-lxd.yaml
+      CONCIERGE/test_haproxy_route_policy: concierge-lxd.yaml
+      CONCIERGE/test_oauth_spoe: concierge.yaml
   tests/spread/:
     summary: Automated spread testing
     backends:
