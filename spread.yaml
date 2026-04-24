@@ -6,7 +6,7 @@ backends:
     systems:
     - ubuntu-24.04:
         cpu: 8
-        memory: 8
+        memory: 10
         disk: 40
   tutorial-test:
     systems:
