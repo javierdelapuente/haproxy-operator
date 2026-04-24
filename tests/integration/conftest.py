@@ -180,6 +180,11 @@ def configured_application_with_tls_base_fixture(
         f"{application}:certificates",
         f"{certificate_provider_application}:certificates",
     )
+    lxd_juju.wait(
+        lambda status: jubilant.all_active(status, application)
+        and jubilant.all_active(status, certificate_provider_application),
+        timeout=10 * 60,
+    )
     return application
 
 

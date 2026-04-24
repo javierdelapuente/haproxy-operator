@@ -1,35 +1,50 @@
-# Copyright 2026 Canonical Ltd.
-# See LICENSE file for licensing details.
-
-project: haproxy-operator-tests
-
+project: haproxy-operator
+path: /home/ubuntu/proj
+kill-timeout: 60m
 backends:
-  github-ci:
-    type: adhoc
-
-    allocate: |
-      echo "Allocating ad-hoc $SPREAD_SYSTEM"
-      if [ -z "${GITHUB_RUN_ID:-}" ]; then
-        FATAL "this back-end only works inside GitHub CI"
-        exit 1
-      fi
-      echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/99-spread-users
-      ADDRESS localhost:22
-    discard: |
-      echo "Discarding ad-hoc $SPREAD_SYSTEM"
+  integration-test:
     systems:
-      # username and password are required because docs-spread.yaml creates a new user (ubuntu:ubuntu)
-      # Before tests are ran.
-      - ubuntu-24.04:
-          username: ubuntu
-          password: ubuntu
-          workers: 1
-
+    - ubuntu-24.04:
+        cpu: 8
+        memory: 10
+        disk: 40
+  tutorial-test:
+    systems:
+    - ubuntu-24.04:
+        cpu: 4
+        memory: 8
+        disk: 20
+environment:
+  SUDO_USER: ''
+  SUDO_UID: ''
+  LANG: C.UTF-8
+  LANGUAGE: en
+  CONCIERGE: '$(HOST: echo "${CONCIERGE:-concierge.yaml}")'
+exclude:
+- .git
+- .tox
+- .venv
+- .*_cache
 suites:
+  tests/integration/:
+    summary: integration tests
+    backends:
+    - integration-test
+    prepare: |
+      # Register the k8s cloud in Juju's client credential store so that
+      # the k8s_juju fixture can add it to the localhost controller.
+      # This mirrors the CI pre-run script: sudo k8s config | juju add-k8s ck8s --client
+      runuser -l ubuntu -c "sudo k8s config | juju add-k8s ck8s --client" || true
+    environment:
+      MODULE/test_haproxy_ddos: test_haproxy_ddos
+      MODULE/test_haproxy_route_policy: test_haproxy_route_policy
+      MODULE/test_oauth_spoe: test_oauth_spoe
+      CONCIERGE/test_haproxy_ddos: concierge-lxd.yaml
+      CONCIERGE/test_haproxy_route_policy: concierge-lxd.yaml
+      CONCIERGE/test_oauth_spoe: concierge.yaml
   tests/spread/:
     summary: Automated spread testing
-    systems:
-      - ubuntu-24.04
-
-path: /home/spread/proj
-kill-timeout: 1h
+    backends:
+    - tutorial-test
+    environment:
+      TUTORIAL/getting_started: /docs/tutorial/getting-started.md
