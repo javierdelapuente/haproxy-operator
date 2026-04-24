@@ -1,4 +1,8 @@
 summary: integration tests
 
 execute: |
-    $( opcli pytest run -- -k $MODULE )
+    loginctl enable-linger ubuntu
+    cd "${SPREAD_PATH}"
+    chown -R ubuntu:ubuntu "${SPREAD_PATH}"
+    PYTEST_CMD=$(opcli pytest expand -- --model testing -k "$MODULE") || exit 1
+    runuser -l ubuntu -c "cd \"${SPREAD_PATH}\" && $PYTEST_CMD"

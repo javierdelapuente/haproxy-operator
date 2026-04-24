@@ -34,3 +34,4 @@ haproxy-route-policy/.python-version
 
 tests/spread/tutorial/
 **/.spread-reuse*
+artifacts-generated.yaml

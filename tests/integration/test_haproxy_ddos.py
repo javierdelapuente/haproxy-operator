@@ -26,7 +26,10 @@ def test_haproxy_ddos_protection_integration(
         f"{configured_application_with_tls}:haproxy-route", HAPROXY_ROUTE_REQUIRER_NAME
     )
     lxd_juju.wait(
-        lambda status: not status.apps[HAPROXY_ROUTE_REQUIRER_NAME].is_waiting,
+        lambda status: status.apps[HAPROXY_ROUTE_REQUIRER_NAME].units[
+            f"{HAPROXY_ROUTE_REQUIRER_NAME}/0"
+        ].juju_status.current
+        == "idle",
         timeout=5 * 60,
     )
     lxd_juju.run(
