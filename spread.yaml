@@ -30,6 +30,11 @@ suites:
     summary: integration tests
     backends:
     - integration-test
+    prepare: |
+      # Register the k8s cloud in Juju's client credential store so that
+      # the k8s_juju fixture can add it to the localhost controller.
+      # This mirrors the CI pre-run script: sudo k8s config | juju add-k8s ck8s --client
+      runuser -l ubuntu -c "sudo k8s config | juju add-k8s ck8s --client" || true
     environment:
       MODULE/test_haproxy_ddos: test_haproxy_ddos
       MODULE/test_haproxy_route_policy: test_haproxy_route_policy
