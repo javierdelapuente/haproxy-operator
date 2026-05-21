@@ -1,17 +1,6 @@
 summary: integration tests
 
-prepare: |
-    if command -v microk8s > /dev/null 2>&1; then
-        # Wait for microk8s to be fully ready before running tests.
-        microk8s status --wait-ready --timeout 120
-
-        # Regenerate the kubeconfig and make it available to ubuntu.
-        # (Concierge runs as root, tests run as ubuntu.)
-        install -d -m 0755 -o ubuntu -g ubuntu /home/ubuntu/.kube
-        microk8s config | install -m 0644 -o ubuntu -g ubuntu /dev/stdin /home/ubuntu/.kube/config
-    fi
-
 execute: |
     cd "${SPREAD_PATH}"
-    PYTEST_CMD=$(opcli pytest expand -e "${TOX_ENV:-integration}" -- -k "$MODULE") || exit 1
+    PYTEST_CMD=$(opcli pytest expand -e "${TOX_ENV:-integration}" -- --model testing --keep-models -k "$MODULE") || exit 1
     runuser -l ubuntu -c "cd '${SPREAD_PATH}' && ${PYTEST_CMD}"
