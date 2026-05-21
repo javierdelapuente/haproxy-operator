@@ -6,17 +6,12 @@ juju:
 providers:
   lxd:
     enable: true
-  k8s:
+  microk8s:
     enable: true
     bootstrap: false
-    bootstrap-constraints:
-      root-disk: "2G"
-    features:
-      load-balancer:
-        l2-mode: "true"
-        cidrs: "10.43.45.0/28"
-      local-storage: {}
-      network: {}
+    addons:
+      - dns
+      - hostpath-storage
 
 host:
   packages:

@@ -1,15 +1,14 @@
 summary: integration tests
 
 prepare: |
-    if command -v k8s > /dev/null 2>&1; then
-        # Concierge may still be applying feature configuration (network, load-balancer).
-        # Wait for k8s to be fully ready before copying the kubeconfig or running tests.
-        k8s status --wait-ready --timeout 120s
+    if command -v microk8s > /dev/null 2>&1; then
+        # Wait for microk8s to be fully ready before running tests.
+        microk8s status --wait-ready --timeout 120
 
-        # Regenerate the kubeconfig now that k8s is confirmed ready, and make it
-        # available to ubuntu. (Concierge runs as root, tests run as ubuntu.)
+        # Regenerate the kubeconfig and make it available to ubuntu.
+        # (Concierge runs as root, tests run as ubuntu.)
         install -d -m 0755 -o ubuntu -g ubuntu /home/ubuntu/.kube
-        k8s kubectl config view --raw | install -m 0644 -o ubuntu -g ubuntu /dev/stdin /home/ubuntu/.kube/config
+        microk8s config | install -m 0644 -o ubuntu -g ubuntu /dev/stdin /home/ubuntu/.kube/config
     fi
 
 execute: |
