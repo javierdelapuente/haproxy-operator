@@ -79,12 +79,15 @@ def k8s_juju_fixture(lxd_juju: jubilant.Juju, request: pytest.FixtureRequest):
     )
     k8s_cloud = k8s_clouds[0]
 
-    # Add the k8s cloud to our new controller.
+    # Add the k8s cloud with credentials to the controller.
+    # juju add-k8s reads from ~/.kube/config and registers both the cloud
+    # definition and credentials, unlike add-cloud which omits credentials.
     lxd_juju.cli(
-        "add-cloud",
+        "add-k8s",
+        k8s_cloud,
         "--controller",
         lxd_juju.status().model.controller,
-        k8s_cloud,
+        "--client",
         include_model=False,
     )
 

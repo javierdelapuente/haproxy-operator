@@ -2,8 +2,9 @@ summary: integration tests
 
 prepare: |
     # Make the k8s kubeconfig available to the ubuntu user.
-    # Concierge runs as root, so it writes kubeconfig to /root/.kube/config.
-    # The test fixture runs as ubuntu and needs it at ~/.kube/config.
+    # Concierge runs as root, so it writes the kubeconfig to /root/.kube/config.
+    # The test fixture runs as ubuntu and needs the kubeconfig so that
+    # juju add-k8s can read k8s credentials from it.
     if [ -f /root/.kube/config ]; then
         install -d -m 0755 -o ubuntu -g ubuntu /home/ubuntu/.kube
         install -m 0644 -o ubuntu -g ubuntu /root/.kube/config /home/ubuntu/.kube/config
