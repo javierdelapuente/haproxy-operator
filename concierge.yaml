@@ -12,6 +12,7 @@ providers:
     addons:
       - dns
       - hostpath-storage
+      - metallb
 
 host:
   packages:
