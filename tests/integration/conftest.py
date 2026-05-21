@@ -87,7 +87,6 @@ def k8s_juju_fixture(lxd_juju: jubilant.Juju, request: pytest.FixtureRequest):
         k8s_cloud,
         "--controller",
         lxd_juju.status().model.controller,
-        "--client",
         include_model=False,
     )
 
