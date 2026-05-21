@@ -65,7 +65,7 @@ def lxd_juju_fixture(request: pytest.FixtureRequest):
         keep=keep_models, cloud=lxd_cloud_name, controller=lxd_controller_name
     ) as juju:
         juju.wait_timeout = JUJU_WAIT_TIMEOUT
-        return juju
+        yield juju
 
 
 @pytest.fixture(scope="session", name="k8s_juju")
