@@ -71,24 +71,18 @@ def lxd_juju_fixture(request: pytest.FixtureRequest):
 @pytest.fixture(scope="session", name="k8s_juju")
 def k8s_juju_fixture(lxd_juju: jubilant.Juju, request: pytest.FixtureRequest):
     """Bootstrap a new k8s model in the lxd controller and return a Juju fixture for it."""
-    clouds_json = lxd_juju.cli("clouds", "--format=json", include_model=False)
-    clouds = json.loads(clouds_json)
-    k8s_clouds = sorted([k for k, v in clouds.items() if v["type"] == "k8s"])
-    assert len(k8s_clouds) >= 1, (
-        f"At least one cloud of type k8s supported for the test. {k8s_clouds}"
-    )
-    k8s_cloud = k8s_clouds[0]
+    controller = lxd_juju.status().model.controller
 
-    # Add the k8s cloud with credentials to the controller.
-    # juju add-k8s reads from ~/.kube/config and registers both the cloud
-    # definition and credentials, unlike add-cloud which omits credentials.
-    lxd_juju.cli(
-        "add-k8s",
-        k8s_cloud,
-        "--controller",
-        lxd_juju.status().model.controller,
-        include_model=False,
-    )
+    # "k8s" is a juju built-in cloud name and cannot be re-registered with add-k8s.
+    # Use a custom name so that add-k8s can register both the cloud definition and
+    # credentials from ~/.kube/config on the controller.
+    k8s_cloud = "k8s-charm"
+    try:
+        lxd_juju.cli("add-k8s", k8s_cloud, "--controller", controller, include_model=False)
+    except jubilant.CLIError as err:
+        if "already exists" not in str(err):
+            logger.exception(err)
+            raise
 
     new_juju = jubilant.Juju(model=lxd_juju.model)
     new_juju.wait_timeout = JUJU_WAIT_TIMEOUT
