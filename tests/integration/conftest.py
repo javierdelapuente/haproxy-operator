@@ -38,7 +38,7 @@ def lxd_juju_fixture(request: pytest.FixtureRequest):
     try:
         juju.bootstrap(lxd_cloud_name, lxd_controller_name)
     except jubilant.CLIError as err:
-        if not "already exists":
+        if "already exists" not in str(err):
             logger.exception(err)
             raise
 
@@ -52,7 +52,7 @@ def lxd_juju_fixture(request: pytest.FixtureRequest):
                 model=model, cloud=lxd_cloud_name, controller=lxd_controller_name
             )
         except jubilant.CLIError as err:
-            if not "already exists":
+            if "already exists" not in str(err):
                 logger.exception(err)
                 raise
             juju.model = f"{lxd_controller_name}:{model}"
@@ -94,7 +94,7 @@ def k8s_juju_fixture(lxd_juju: jubilant.Juju, request: pytest.FixtureRequest):
     try:
         new_juju.add_model(k8s_model_name, k8s_cloud)
     except jubilant.CLIError as err:
-        if not "already exists":
+        if "already exists" not in str(err):
             logger.exception(err)
             raise
         new_juju.model = k8s_model_name
